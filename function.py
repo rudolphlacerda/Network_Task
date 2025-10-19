@@ -5,6 +5,9 @@ from funct_main import device_loop
 from funct_main import device_count
 from funct_main import get_list_of_vrf
 from funct_main import backup_vrf_tables
+from funct_main import current_vrf_tables
+
+
 num = device_count.num_of_device()
 
 print('''What do you want to do? \n 
@@ -12,9 +15,10 @@ print('''What do you want to do? \n
      2. See the version of the devices \n
      3. Confgure Loopback IP for each devce \n
      4. Get a list of vrf on all devices \n
-     5. Take a backup of all discovered vrf on all devices''')
+     5. Take a backup of all discovered vrf on all devices\n
+     6. Compare a VRF's current table with it's backup''')
 
-menu_choice = int(input('Enter number from 1 to 5 :'))
+menu_choice = int(input('Enter number from 1 to 6 :'))
 
 if menu_choice == 1:
     names = input_device_list.name_of_device(num)
@@ -40,3 +44,6 @@ elif menu_choice == 5:
     names = input_device_list.name_of_device(num)
     backup_vrf_tables.vrf_tables_backup(names)
     
+elif menu_choice == 6:
+    names = input_device_list.name_of_device(num)
+    current_vrf_tables.compare_current(names)
