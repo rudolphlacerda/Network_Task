@@ -1,4 +1,6 @@
 from netmiko import ConnectHandler
+import socket
+
 def conf_lo(names):
 
     for ip in names:
@@ -10,13 +12,15 @@ def conf_lo(names):
             'password': 'cisco',
             }
         net_connect = ConnectHandler(**cisco_881)
-
-        last_octet = ip[-2::]
-        lo_ip = '172.16.0.' + last_octet + ' 255.255.255.255'
+        convert_to_ip = socket.gethostbyname(ip)
+        print(convert_to_ip)
+        last_octet =  convert_to_ip[-2::]
+        lo_ip = 'ip address ' + '172.16.0.' + last_octet + ' 255.255.255.255'
 
         config_commands = [ 'int lo0',
-                            'ip address lo_ip',
+                            lo_ip,
                           ]
+        print(config_commands)
         output = net_connect.send_config_set(config_commands)
-        print('Connecting to {}: '.format(ip))
-        print('IP address configured on Loopback 0 is {}: '.format(lo_ip))
+        #print('Connecting to {}: '.format(ip))
+        #print('IP address configured on Loopback 0 is {}: '.format(lo_ip))

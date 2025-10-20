@@ -1,0 +1,4 @@
+  Name                             Default RD          Interfaces
+  A                                100:1               Fa1/1
+                                                       Lo3
+  C                                300:1               Fa1/0

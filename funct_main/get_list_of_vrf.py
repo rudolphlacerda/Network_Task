@@ -23,8 +23,11 @@ def get_vrf_list(names):
             content = file.readlines()
             for i in content:
                 word = i.split()
-                vrf = word[0]
-                raw_vrf_list.append(vrf)
+                if len(word) < 2:
+                    pass
+                else:
+                    vrf = word[0]
+                    raw_vrf_list.append(vrf)
     vrf_list = list(set(raw_vrf_list))
 
     with open('vrf_list.txt','w') as f:
