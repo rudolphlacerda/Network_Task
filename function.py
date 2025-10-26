@@ -1,14 +1,15 @@
+from funct_main import count_of_devices
 from funct_main import input_device_list
 from funct_main import interface_brief
 from funct_main import device_version
 from funct_main import device_loop
-from funct_main import device_count
 from funct_main import get_list_of_vrf
 from funct_main import backup_vrf_tables
 from funct_main import current_vrf_tables
+from funct_main import ruthim
 
+num = count_of_devices.num_of_device()
 
-num = device_count.num_of_device()
 
 print('''What do you want to do? \n 
      1. See the interfaces of the devices and their IP \n 
@@ -19,6 +20,7 @@ print('''What do you want to do? \n
      6. Compare a VRF's current table with it's backup''')
 
 menu_choice = int(input('Enter number from 1 to 6 :'))
+
 
 if menu_choice == 1:
     names = input_device_list.name_of_device(num)

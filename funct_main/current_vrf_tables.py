@@ -7,10 +7,9 @@ def compare_current(names):
 	# Define the name of the customer who's current route table needs to be compared to the backup route table
 	cust_vrf = input('Enter name of the customer VRF you want to compare with backup: ')
 
-	device = ['192.168.255.11','192.168.255.12','192.168.255.13']
 
 	# this loop will go over every device in the device list
-	for ip in device:
+	for ip in names:
 
 		cisco_881 = {
 			'device_type': 'cisco_ios',
