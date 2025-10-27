@@ -5,7 +5,7 @@ from netmiko import ConnectHandler
 import device_list
 
 def master_backup():
-	for ip in device_list.sample_data:
+	for ip in device_list.sample_data: # The file device_list.py needs to be in the same location as this script
 		cisco_881 = {
 		'device_type': 'cisco_ios',
 		'host':   ip,

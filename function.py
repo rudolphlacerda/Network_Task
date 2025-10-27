@@ -6,9 +6,8 @@ from funct_main import device_loop
 from funct_main import get_list_of_vrf
 from funct_main import backup_vrf_tables
 from funct_main import current_vrf_tables
-from funct_main import ruthim
 
-num = count_of_devices.num_of_device()
+num = count_of_devices.num_of_device() # The selected option in the menu will run on the number of devices specified
 
 
 print('''What do you want to do? \n 
@@ -19,7 +18,7 @@ print('''What do you want to do? \n
      5. Take a backup of all discovered vrf on all devices\n
      6. Compare a VRF's current table with it's backup''')
 
-menu_choice = int(input('Enter number from 1 to 6 :'))
+menu_choice = count_of_devices.menu_options()
 
 
 if menu_choice == 1:

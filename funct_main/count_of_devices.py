@@ -7,3 +7,15 @@ def num_of_device():
 		except:
 			print('Please enter a numberic value')
 	return num
+
+def menu_options():
+
+	while True:
+		try:
+			selection = int(input('Please enter a number from the menu: '))
+			if selection < 7:
+				break
+
+		except:
+			print('Please enter a number between 1-6')
+	return selection

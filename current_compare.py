@@ -9,9 +9,12 @@ import smtplib
 import getpass
 
 def currentrun_compare():
+# Setting up Gmail account to send mails on mismatch
 	smtp_object = smtplib.SMTP('smtp.gmail.com',587)
 	smtp_object.ehlo()
 	smtp_object.starttls()
+
+# Iterate through the list of devices that should be in the same location as this script file 	
 	for ip in device_list.sample_data:
 		cisco_881 = {
 		'device_type': 'cisco_ios',
@@ -22,11 +25,13 @@ def currentrun_compare():
 		
 		net_connect = ConnectHandler(**cisco_881)
 		show_run = net_connect.send_command('show run')
-		
+
+# This block will do a show run on each device and creat a file with name "deviceIPcurrent"		
 		filename = ip + 'runcurrent'
 		with open(filename , 'w') as f:
 			f.write(show_run)
-			
+
+# This block will compare the DeviceIPcurrent with the DeviceIPmaster taken with the script "master_backup"			
 		textfile1 = ip + 'runmaster'
 		textfile2 = ip + 'runcurrent'
 		command_structure = 'diff ' + textfile1 + " " + textfile2
