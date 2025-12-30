@@ -1,0 +1,4 @@
+Device Name,Serial Number,IP address,In Support
+R1,abc,192.168.255.11,yes
+R2,def,192.168.255.12,no
+R3,ghi,192.168.255.13,yes
