@@ -1,4 +1,4 @@
-import schedule
+#import schedule
 import time
 from datetime import datetime
 from netmiko import ConnectHandler
@@ -23,8 +23,8 @@ def master_backup():
 	print(f"Job executed at: {datetime.now()}")
 
 		
-schedule.every(7).days.at("10:30").do(master_backup)
+#schedule.every(7).days.at("10:30").do(master_backup)
 
-while True:
-    schedule.run_pending()
-    time.sleep(3600) 
+#while True:
+#    schedule.run_pending()
+#    time.sleep(3600) 
