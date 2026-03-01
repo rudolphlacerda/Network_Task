@@ -1,0 +1,20 @@
+---
+- name: Get Cisco IOS Version
+  hosts: cisco_ios_routers
+  gather_facts: no
+
+  tasks:
+    - name: Run show ip interface brief
+      cisco.ios.ios_command:
+       commands: sh ip int brief
+      register: interface_brief
+
+#    - name: Display connection message
+#      ansible.builtin.debug:
+#       var: interface_brief
+
+    - name: Save output to file
+      ansible.builtin.copy:
+       content: "{{interface_brief.stdout[0]}}"
+       dest: "{{ inventory_hostname }}_intf.txt"
+      delegate_to: localhost

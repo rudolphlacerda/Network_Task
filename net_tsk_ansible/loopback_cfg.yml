@@ -1,0 +1,21 @@
+---
+- name: Configure Loopback interface
+  hosts: cisco_ios_routers
+  gather_facts: no
+
+
+
+  tasks:
+   - name: find the ip address
+     ansible.builtin.set_fact:
+      resolved_ip: "{{ lookup('dig', inventory_hostname}}"
+     register: ipaddress
+      
+   - name: Configure interface settings
+     cisco.ios.ios_config:
+      lines:
+       - description test interface
+       - ip address 172.16.0.{{ ipaddress.split('.')[-1]}} 255.255.255.255
+      parents: interface loopback0
+
+

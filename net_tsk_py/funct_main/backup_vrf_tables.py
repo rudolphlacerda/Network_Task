@@ -1,0 +1,29 @@
+from netmiko import ConnectHandler
+
+def vrf_tables_backup(names):
+    with open('vrf_list.txt','r') as f:
+        vrf_list = f.read().split()
+
+
+    for v in vrf_list:
+        for ip in names:
+
+            cisco_881 = {
+                'device_type': 'cisco_ios',
+                'host':   ip,
+                'username': 'rudy',
+                'password': 'cisco',
+                }
+                
+            net_connect = ConnectHandler(**cisco_881)
+            route_table_command = 'show ip route vrf ' + v
+            route_table = net_connect.send_command(route_table_command)
+            output = net_connect.send_command('show ip vrf')
+            if v in output:
+                print('vrf {} in router {}'.format(v,ip))
+                filename = v+ip+'backup'
+                print(filename)
+                with open(filename, 'w') as z:
+                    z.write(route_table)
+            else:
+                continue

@@ -1,0 +1,28 @@
+---
+- name: Get Cisco IOS Version
+  hosts: cisco_ios_routers
+  gather_facts: no
+
+  tasks:
+    - name: Run show version command
+      cisco.ios.ios_facts:
+       gather_subset:
+        - hardware
+      register: Rudy_ios_facts
+
+    - name: Display connection message
+      ansible.builtin.debug:
+#       var: Rudy_ios_facts
+       msg: |
+            Host: {{ inventory_hostname }}
+            Version: {{ ansible_net_version}}
+            Model: {{ ansible_net_model }}
+            Serial: {{ ansible_net_serialnum}}
+            Rudy: {{ansible_net_model }}
+
+    - name: Save output to file
+      ansible.builtin.lineinfile:
+       path: output.txt
+       line: "{{inventory_hostname }}: Version {{ansible_net_version}}: Serial {{ ansible_net_serialnum}}: Rudy  {{ ansible_net_model }}"
+       create: yes
+      delegate_to: localhost
