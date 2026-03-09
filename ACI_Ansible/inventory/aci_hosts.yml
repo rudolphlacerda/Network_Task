@@ -1,0 +1,11 @@
+---
+all:
+  children:
+    apic:
+      hosts:
+        apic1:
+         ansible_host: sandboxapicdc.cisco.com
+         aci_username: admin
+         aci_password: "!v3G@!4@Y"
+         validate_certs: false
+          

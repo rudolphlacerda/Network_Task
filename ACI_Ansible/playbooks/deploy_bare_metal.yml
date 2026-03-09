@@ -1,0 +1,112 @@
+---
+- name: Deploy Bare Metal Server to ACI Fabric
+  hosts: apic1
+  gather_facts: false
+  connection: local
+  vars:
+    aci_login: &aci_login
+     host: "{{ ansible_host }}"
+     username: "{{ aci_username }}"
+     password: "{{ aci_password }}"
+     validate_certs: "{{ validate_certs }}"
+     use_ssl: true           # Enable HTTPS
+     use_proxy: false        # Bypass proxy if needed
+     port: 443               # HTTPS port
+    tenant: "BareMetalTenant"
+    ap: "BareMetalAP"
+    epg: "BareMetalEPG"
+    bd: "BareMetalBD"
+    vrf: "BareMetalVRF"
+    vlan_id: "310"
+    leaf_node: "101"
+    interface: "1/11"
+    
+  tasks:
+    # --- Tenant ---
+    - name: Create Tenant
+      cisco.aci.aci_tenant:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        description: "Bare Metal Server Tenant"
+        state: present
+
+    # --- VRF ---
+    - name: Create VRF
+      cisco.aci.aci_vrf:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        vrf: "{{ vrf }}"
+        state: present
+
+    # --- Bridge Domain ---
+    - name: Create Bridge Domain
+      cisco.aci.aci_bd:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        bd: "{{ bd }}"
+        vrf: "{{ vrf }}"
+        state: present
+
+    - name: Create BD Subnet
+      cisco.aci.aci_bd_subnet:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        bd: "{{ bd }}"
+        gateway: "192.168.1.1"
+        mask: 24
+        state: present
+
+    # --- Application Profile & EPG ---
+    - name: Create Application Profile
+      cisco.aci.aci_ap:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        ap: "{{ ap }}"
+        state: present
+
+    - name: Create EPG
+      cisco.aci.aci_epg:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        ap: "{{ ap }}"
+        epg: "{{ epg }}"
+        bd: "{{ bd }}"
+        state: present
+
+    # --- Physical Domain Binding ---
+    - name: Bind Physical Domain to EPG
+      cisco.aci.aci_epg_to_domain:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        ap: "{{ ap }}"
+        epg: "{{ epg }}"
+        domain: "phys_baremetal"
+        domain_type: phys
+        state: present
+
+    # --- Static Port Binding (Bare Metal Server Port) ---
+    - name: Bind Static Port to EPG
+      cisco.aci.aci_static_binding_to_epg:
+        <<: *aci_login
+        tenant: "{{ tenant }}"
+        ap: "{{ ap }}"
+        epg: "{{ epg }}"
+        encap_id: "{{ vlan_id }}"
+        deploy_immediacy: immediate
+        interface_mode: untagged
+        interface_type: switch_port
+        pod_id: 1
+        leafs: "{{ leaf_node }}"
+        interface: "{{ interface }}"
+        state: present
+        
+    - name: Associate EPG with AEP
+      cisco.aci.aci_aep_to_epg:
+       <<: *aci_login
+       aep: "BareMetalAEP"
+       tenant: "{{ tenant }}"
+       ap: "{{ ap }}"
+       epg: "{{ epg }}"
+       encap_id: "{{ vlan_id }}"
+       interface_mode: access
+       state: present

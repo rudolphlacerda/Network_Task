@@ -1,0 +1,64 @@
+---
+- name: Setup Physical Domain for Bare Metal
+  hosts: apic1
+  gather_facts: false
+  connection: local
+  
+  vars:
+   aci_login: &aci_login
+    host: "{{ ansible_host }}"
+    username: "{{ aci_username }}"
+    password: "{{ aci_password }}"
+    validate_certs: "{{ validate_certs }}"
+    use_ssl: true           # Enable HTTPS
+    use_proxy: false        # Bypass proxy if needed
+    port: 443               # HTTPS port
+  
+  tasks:
+    - name: Create VLAN Pool
+      cisco.aci.aci_vlan_pool:
+        <<: *aci_login
+        pool: "BareMetalVLANPool"
+        pool_allocation_mode: static
+        state: present
+
+    - name: Add VLAN Range
+      cisco.aci.aci_encap_pool_range:
+        <<: *aci_login
+        pool: "BareMetalVLANPool"
+        pool_type: vlan
+        pool_allocation_mode: static
+        range_start: 300
+        range_end: 399
+        allocation_mode: static
+        state: present
+
+    - name: Create Physical Domain
+      cisco.aci.aci_domain:
+        <<: *aci_login
+        domain: "phys_baremetal"
+        domain_type: phys
+        state: present
+
+    - name: Bind VLAN Pool to Physical Domain
+      cisco.aci.aci_domain_to_vlan_pool:
+        <<: *aci_login
+        domain: "phys_baremetal"
+        domain_type: phys
+        pool: "BareMetalVLANPool"
+        pool_allocation_mode: static
+        state: present
+
+    - name: Create AEP
+      cisco.aci.aci_aep:
+        <<: *aci_login
+        aep: "BareMetalAEP"
+        state: present
+
+    - name: Bind Domain to AEP
+      cisco.aci.aci_aep_to_domain:
+        <<: *aci_login
+        aep: "BareMetalAEP"
+        domain: "phys_baremetal"
+        domain_type: phys
+        state: present

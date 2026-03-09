@@ -1,0 +1,77 @@
+---
+- name: Setup Interface Policies for Bare Metal
+  hosts: apic1
+  gather_facts: false
+  connection: local
+  
+  vars:
+   aci_login: &aci_login
+    host: "{{ ansible_host }}"
+    username: "{{ aci_username }}"
+    password: "{{ aci_password }}"
+    validate_certs: "{{ validate_certs }}"
+    use_ssl: true           # Enable HTTPS
+    use_proxy: false        # Bypass proxy if needed
+    port: 443               # HTTPS port
+  
+  tasks:
+  
+    - name: Create CDP Interface Policy to enable CDP #check
+      cisco.aci.aci_interface_policy_cdp:
+       <<: *aci_login
+       name: Ansible_CDP_Interface_Policy
+       admin_state: true
+       state: present
+
+    - name: Create Leaf Profile #check
+      cisco.aci.aci_switch_policy_leaf_profile:
+        <<: *aci_login
+        leaf_profile: "Leaf101_SwProf"
+        state: present
+
+    - name: Add Leaf Selector to Leaf Profile # check
+      cisco.aci.aci_switch_leaf_selector:
+        <<: *aci_login
+        leaf_profile: "Leaf101_SwProf"
+        leaf: "Leaf101"
+        leaf_node_blk: "LeafBlk1"
+        from: 101
+        to: 101
+        policy_group: "BareMetalPolGrp"
+        state: present
+
+    - name: Create Leaf Interface Profile #check
+      cisco.aci.aci_interface_policy_leaf_profile:
+        <<: *aci_login
+        interface_profile: "Leaf101_IntProf"
+        state: present
+        
+    - name: Create Interface Policy Group
+      cisco.aci.aci_interface_policy_leaf_policy_group: #check
+        <<: *aci_login
+        policy_group: "BareMetalPolGrp"
+        lag_type: leaf
+        cdp_policy: cdppolicy
+        state: present
+        
+    - name: Add a range of ports to the access port selector #check error
+      cisco.aci.aci_access_port_to_interface_policy_leaf_profile:
+        <<: *aci_login
+        interface_profile: "Leaf101_IntProf"
+        access_port_selector: "BareMetalPorts"
+        from_port: 10
+        to_port: 12
+        policy_group: "BareMetalPolGrp"
+        state: present
+
+    - name: Associate Interface Profile to Leaf Profile #check
+      cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
+        <<: *aci_login
+        leaf_profile: "Leaf101_SwProf"
+        interface_selector: "Leaf101_IntProf"
+        state: present
+        
+       
+
+
+
