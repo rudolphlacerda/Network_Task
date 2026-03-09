@@ -1,0 +1,1 @@
+{{ lookup('file','/home/kali/ansible_projects/conversion/tmp/{{ inventory_hostname }}_output.txt').splitlines()[1:] | join('\n') }}

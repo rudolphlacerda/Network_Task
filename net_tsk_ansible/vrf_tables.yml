@@ -1,0 +1,54 @@
+---
+- name: Get Unique VRF List from All Routers
+  hosts: gns3_host
+  gather_facts: no
+  connection: network_cli
+  
+  tasks:
+      # Get VRF list from device
+    - name: Connecting to device and getting VRF list
+      cisco.ios.ios_command:
+        commands:
+          - show ip vrf
+      register: vrf_output
+      
+    - name: Create a temporary output directory
+      ansible.builtin.file:
+        path: /home/kali/ansible_projects/conversion/tmp/tmp2
+        state: directory
+              
+    - name: Write stdout to the temporary directory
+      ansible.builtin.copy:
+       content: "{{ vrf_output.stdout[0] }}"
+       dest: "/home/kali/ansible_projects/conversion/tmp/{{ inventory_hostname }}_output.txt"
+      delegate_to: localhost
+      
+    - name: Using Jinja template to remove the heading from each vrf list and grab only the vrf name
+      ansible.builtin.template:
+       src: config.j2
+       dest: "/home/kali/ansible_projects/conversion/tmp/tmp2/{{ inventory_hostname }}_processed.txt"
+       
+    - name: Merge all the individual files from each device into one single file
+      ansible.builtin.assemble:
+       src: "/home/kali/ansible_projects/conversion/tmp/tmp2"
+       dest: /home/kali/ansible_projects/conversion/tmp/final_vrf_list.txt
+    
+    - name: Read file content and extract only the VRF name
+      ansible.builtin.set_fact:
+        first_elements: >-
+          {{ lookup('file', '/home/kali/ansible_projects/conversion/tmp/final_vrf_list.txt').splitlines() | map('split') | map('first') | list }}
+
+    - name: Copy vrf names to file
+#      ansible.builtin.debug:
+#        var: first_elements
+      ansible.builtin.copy:
+       content: "{{ first_elements | ansible.builtin.unique }}"
+       dest: "list_of_vrf.txt"
+      delegate_to: localhost
+      
+    - name: Delete the temporary directory
+      ansible.builtin.file:
+       path: /home/kali/ansible_projects/conversion/tmp/
+       state: absent
+
+
