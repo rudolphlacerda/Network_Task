@@ -1,0 +1,122 @@
+Building configuration...
+
+Current configuration : 1488 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+ip vrf B
+ rd 200:1
+!
+ip vrf C
+ rd 300:1
+!
+no ip domain lookup
+ip domain name bluebottle.com
+ip auth-proxy max-nodata-conns 3
+ip admission max-nodata-conns 3
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username rudy privilege 15 password 7 02050D480809
+!
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.255.12 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip vrf forwarding B
+ ip address 192.168.12.2 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip vrf forwarding C
+ ip address 192.168.23.2 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+no cdp log mismatch duplex
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+banner login ^C
+This banner is created from a text file. Please log off immidiately if you ae not an authorised user
+un authorised use of this device will lead to civil and criminal libalities
+^C
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login local
+ transport input all
+!
+ntp server 10.10.10.10
+!
+end

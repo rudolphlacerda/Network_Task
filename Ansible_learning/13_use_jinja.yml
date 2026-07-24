@@ -1,0 +1,11 @@
+---
+- hosts: R1
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+
+# Pre-create the bgp config in a j2 file. indent as per actual config in router
+    - name: configure bgp via Jinja2 template
+      cisco.ios.ios_config:
+        src: config_bgp.j2

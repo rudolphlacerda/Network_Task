@@ -1,0 +1,4 @@
+---
+- name: print output to screen
+  debug:
+   var=output.stdout_lines

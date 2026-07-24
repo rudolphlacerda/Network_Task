@@ -1,0 +1,16 @@
+[cisco_ios_routers]
+R1 ansible_host=192.168.255.11
+R2 ansible_host=192.168.255.12
+R3 ansible_host=192.168.255.13
+
+[cisco_ios_routers:vars]
+ansible_user=rudy
+ansible_password=cisco
+ansible_network_os=ios
+#ansible_connection=ansible.netcommon.network_cli
+
+
+
+#[routers]
+#router1.example.com ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios
+#router2.example.com ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios

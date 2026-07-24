@@ -1,0 +1,59 @@
+---
+- hosts: R1,R3
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+
+   - name: configure OSPF on all devices for VRF A
+     cisco.ios.ios_config:
+      lines:
+       - network 0.0.0.0 255.255.255.255 area 0
+      parents:
+       - router ospf 1 vrf A
+
+- hosts: R1
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: create a loopback on R1 and redustribute it into OSPF
+      cisco.ios.ios_config:
+        lines:
+          - ip vrf forwarding A
+          - ip address 10.10.10.10 255.255.255.255
+        parents:
+          - int loopback 10
+
+    - name: add description to the loopback without rewriting the entire block
+      cisco.ios.ios_config:
+        lines: description interface user for testing
+        parents: int loopback 10
+        replace: line
+
+    - name: redistribute the loopback into OSPF
+      cisco.ios.ios_config:
+        lines:
+          - redistribute connected
+        parents:
+          - router ospf 1 vrf A
+
+    - name: Wait for 10 seconds
+      ansible.builtin.pause:
+       seconds: 10
+
+- hosts: R3
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: test connectivity from R3 to the loopback on R1
+      cisco.ios.ios_command:
+        commands:
+          - ping vrf A 10.10.10.10 repeat 5
+
+      register: ping_output
+
+    - name: ping output to screen
+      debug:
+        var=ping_output.stdout_lines

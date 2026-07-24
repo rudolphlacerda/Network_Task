@@ -1,0 +1,23 @@
+---
+- hosts: R3
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+
+   - name: remove description
+     cisco.ios.ios_config:
+       lines: no description
+       parents: int {{item}}
+     with_items: ['fa0/0','fa0/1','fa1/0']
+
+
+   - name: see the description of the int with list
+     cisco.ios.ios_command:
+       commands: sh run int {{item}} | i description
+     with_items: ['fa0/0','fa0/1','fa1/0']
+     register: output
+
+   - name: print output
+     debug:
+       var: output

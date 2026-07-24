@@ -1,0 +1,23 @@
+---
+- hosts: R1
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: create acl and remove the existing acl before creating it
+      cisco.ios.ios_config:
+        lines:
+          - 10 permit ip host 192.168.2.1 any
+          - 20 permit ip host 192.168.2.2 any
+          - 30 permit ip host 192.168.2.3 any
+          - 40 permit ip host 192.168.2.4 any
+          - 50 permit ip host 192.168.2.5 any
+        parents: ip access-list extended demo_acl
+        before: no ip access-list extended demo_acl
+        match: exact
+
+    - name: apply the new acl and save the config
+      cisco.ios.ios_config:
+        lines: ip access-group demo_acl out
+        parents: interface loopback 10
+        after: no shut

@@ -1,0 +1,40 @@
+---
+# Fist create a play to gather all facts that are available for use using the below script
+- hosts: R3
+  connection: network_cli
+
+  tasks:
+    - name: Gather IOS facts
+      cisco.ios.ios_facts:
+        gather_subset: all
+#        available_network_resources: true
+#        gather_network_resources: l3_interfaces
+      register: facts
+
+    - name: Print device details
+      ansible.builtin.debug:
+       msg: "{{facts}}"
+
+# run the play as follows:
+#ansible-playbook 01_gather-facts.yml > view
+# from the new file, grep for ansible_net
+# now use that object with the msg module as {{ansible_facts.net_xxx}}
+- hosts: R3
+  connection: network_cli
+
+  tasks:
+    - name: Gather IOS facts
+      cisco.ios.ios_facts:
+        gather_subset: all
+      register: facts
+
+    - name: Print device details
+      ansible.builtin.debug:
+       msg: "Hostname: {{ansible_facts.net_hostname}}, int_IPv4: {{ansible_facts.net_all_ipv4_addresses}}"
+
+    - name: Print device details
+      ansible.builtin.debug:
+       msg: |
+         Serial Number: {{ansible_facts.net_serialnum}}
+         Version: {{ansible_facts.net_version}}
+         Model: {{ansible_facts.net_model}}

@@ -1,0 +1,149 @@
+Building configuration...
+
+Current configuration : 2149 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+ip vrf A
+ rd 100:1
+!
+ip vrf B
+ rd 200:1
+!
+no ip domain lookup
+ip domain name bluebottle.com
+ip auth-proxy max-nodata-conns 3
+ip admission max-nodata-conns 3
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username rudy privilege 15 password 7 030752180500
+username test password 7 010703174F
+username test2 password 7 021201481F
+!
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+interface Loopback1
+ ip vrf forwarding A
+ ip address 1.1.1.1 255.255.255.255
+!
+interface Loopback7
+ ip vrf forwarding A
+ ip address 7.7.7.7 255.255.255.255
+!
+interface Loopback10
+ ip vrf forwarding A
+ ip address 10.10.10.10 255.255.255.255
+!
+interface Loopback20
+ ip vrf forwarding A
+ ip address 20.20.20.20 255.255.255.255
+!
+interface FastEthernet0/0
+ ip address 192.168.255.11 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip vrf forwarding B
+ ip address 192.168.12.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip vrf forwarding A
+ ip address 192.168.13.1 255.255.255.0
+ ip access-group 100 in
+ duplex auto
+ speed auto
+!
+interface FastEthernet2/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+router ospf 1 vrf A
+ log-adjacency-changes
+ redistribute connected
+ network 0.0.0.0 255.255.255.255 area 0
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+access-list 100 deny   ip any host 20.20.20.20
+access-list 100 permit ip any any
+access-list 199 deny   ip any host 20.20.20.20
+no cdp log mismatch duplex
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+banner login ^C
+This banner is created from a text file. Please log off immediately if you ae not an authorized user.
+unauthorized use of this device will lead to civil and criminal liabilities
+^C
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login local
+ transport input all
+!
+ntp server 10.10.10.10
+!
+end

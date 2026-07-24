@@ -1,0 +1,20 @@
+---
+- hosts: cisco_ios_routers
+  connection: network_cli
+# remove the default username and password from R2 so that it picks it up from host_vars
+  tasks:
+
+    - name: check the version of all devices
+      cisco.ios.ios_command:
+        commands: show version | include Version
+      register: output
+
+    - name: print output to screen
+      ansible.builtin.include_tasks:
+        file: print_output.yml
+
+
+# credentails for R2 is in host_vars and stored as a dictionary value
+# gather_facts: false sent to ansible.cfg
+# connection: network_cli sent to group_vars --> need to check
+# print output replaced with print_output.yml

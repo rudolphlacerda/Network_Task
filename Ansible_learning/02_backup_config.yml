@@ -1,0 +1,25 @@
+---
+- hosts: cisco_ios_routers
+  gather_facts: false
+  connection: network_cli
+
+#Play to take a backup of all devices and save it in an already creaded created directory
+
+# Play 1
+  tasks:
+   - name: pull device configurations
+     cisco.ios.ios_command:
+       commands:
+         - show run
+
+     register: show_run_output
+
+   - name: save device configurations to an existing folder
+     copy:
+       content: "{{show_run_output.stdout[0]}}"
+       dest: device_backup/{{inventory_hostname}}.txt
+     register: backup
+
+   - name: Print output
+     debug:
+       var=backup

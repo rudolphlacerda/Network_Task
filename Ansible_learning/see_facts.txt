@@ -1,0 +1,221 @@
+
+PLAY [R3] **********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [R3]
+
+TASK [Gather IOS facts] ********************************************************
+ok: [R3]
+
+TASK [Print device details] ****************************************************
+ok: [R3] => {
+    "msg": {
+        "ansible_facts": {
+            "ansible_net_all_ipv4_addresses": [
+                "192.168.255.13",
+                "192.168.13.3",
+                "192.168.23.3"
+            ],
+            "ansible_net_all_ipv6_addresses": [],
+            "ansible_net_api": "cliconf",
+            "ansible_net_config": "Building configuration...\n\nCurrent configuration : 1726 bytes\n!\nversion 12.4\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nservice password-encryption\n!\nhostname R3\n!\nboot-start-marker\nboot-end-marker\n!\n!\nno aaa new-model\nmemory-size iomem 5\nno ip icmp rate-limit unreachable\nip cef\n!\n!\n!\n!\nip vrf A\n rd 100:1\n!\nip vrf C\n rd 300:1\n!\nno ip domain lookup\nip domain name bluebottle.com\nip auth-proxy max-nodata-conns 3\nip admission max-nodata-conns 3\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nusername rudy privilege 15 password 7 110A1016141D\nusername test password 7 15060E1F10\nusername test2 password 7 03105E1812\n!\n!\nip tcp synwait-time 5\n! \n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 192.168.255.13 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet0/1\n ip vrf forwarding A\n ip address 192.168.13.3 255.255.255.0\n duplex auto\n speed auto\n!\ninterface FastEthernet1/0\n ip vrf forwarding C\n ip address 192.168.23.3 255.255.255.0\n ip access-group 10 in\n duplex auto\n speed auto\n!\ninterface FastEthernet2/0\n no ip address\n shutdown\n duplex auto\n speed auto\n!\nrouter ospf 1 vrf A\n log-adjacency-changes\n network 0.0.0.0 255.255.255.255 area 0\n!\nip forward-protocol nd\n!\n!\nno ip http server\nno ip http secure-server\n!\naccess-list 10 deny   7.7.7.7\naccess-list 10 permit any\nno cdp log mismatch duplex\n!\n!\n!\ncontrol-plane\n!\n!\n!\n!\n!\n!\n!\n!\n!\nbanner login ^C\nThis banner is created from a text file. Please log off immediately if you ae not an authorized user.\nunauthorized use of this device will lead to civil and criminal liabilities\n^C\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\nline vty 0 4\n login local\n transport input all\n!\nntp server 10.10.10.10\n!\nend",
+            "ansible_net_cpu_utilization": {
+                "core": {
+                    "five_minutes": 0,
+                    "five_seconds": 6,
+                    "five_seconds_interrupt": 30,
+                    "one_minute": 1
+                }
+            },
+            "ansible_net_filesystems": [],
+            "ansible_net_filesystems_info": {},
+            "ansible_net_gather_network_resources": [],
+            "ansible_net_gather_subset": [
+                "default",
+                "hardware",
+                "config",
+                "interfaces"
+            ],
+            "ansible_net_hostname": "R3",
+            "ansible_net_image": "tftp://255.255.255.255/unknown",
+            "ansible_net_interfaces": {
+                "FastEthernet0/0": {
+                    "bandwidth": 10000,
+                    "description": null,
+                    "duplex": null,
+                    "ipv4": [
+                        {
+                            "address": "192.168.255.13",
+                            "subnet": "24"
+                        }
+                    ],
+                    "lineprotocol": "up",
+                    "macaddress": "c203.141c.0000",
+                    "mediatype": null,
+                    "mtu": 1500,
+                    "operstatus": "up",
+                    "type": "Gt96k FE"
+                },
+                "FastEthernet0/1": {
+                    "bandwidth": 10000,
+                    "description": null,
+                    "duplex": null,
+                    "ipv4": [
+                        {
+                            "address": "192.168.13.3",
+                            "subnet": "24"
+                        }
+                    ],
+                    "lineprotocol": "up",
+                    "macaddress": "c203.141c.0001",
+                    "mediatype": null,
+                    "mtu": 1500,
+                    "operstatus": "up",
+                    "type": "Gt96k FE"
+                },
+                "FastEthernet1/0": {
+                    "bandwidth": 100000,
+                    "description": null,
+                    "duplex": null,
+                    "ipv4": [
+                        {
+                            "address": "192.168.23.3",
+                            "subnet": "24"
+                        }
+                    ],
+                    "lineprotocol": "up",
+                    "macaddress": "c203.141c.0010",
+                    "mediatype": null,
+                    "mtu": 1500,
+                    "operstatus": "up",
+                    "type": "AmdFE"
+                },
+                "FastEthernet2/0": {
+                    "bandwidth": 100000,
+                    "description": null,
+                    "duplex": null,
+                    "ipv4": [],
+                    "lineprotocol": "down",
+                    "macaddress": "c203.141c.0020",
+                    "mediatype": null,
+                    "mtu": 1500,
+                    "operstatus": "administratively down",
+                    "type": "AmdFE"
+                }
+            },
+            "ansible_net_iostype": "IOS",
+            "ansible_net_memfree_mb": 29.64278793334961,
+            "ansible_net_memtotal_mb": 43.95098876953125,
+            "ansible_net_model": "3725",
+            "ansible_net_neighbors": {
+                "FastEthernet0/0": [
+                    {
+                        "host": "R1.bluebottle.com",
+                        "ip": "192.168.255.11",
+                        "platform": "Cisco 3725",
+                        "port": "FastEthernet0/0"
+                    },
+                    {
+                        "host": "R2.bluebottle.com",
+                        "ip": "192.168.255.12",
+                        "platform": "Cisco 3725",
+                        "port": "FastEthernet0/0"
+                    }
+                ],
+                "FastEthernet0/1": [
+                    {
+                        "host": "R1.bluebottle.com",
+                        "ip": "192.168.13.1",
+                        "platform": "Cisco 3725",
+                        "port": "FastEthernet1/0"
+                    }
+                ],
+                "FastEthernet1/0": [
+                    {
+                        "host": "R2.bluebottle.com",
+                        "ip": "192.168.23.2",
+                        "platform": "Cisco 3725",
+                        "port": "FastEthernet1/0"
+                    }
+                ]
+            },
+            "ansible_net_operatingmode": "autonomous",
+            "ansible_net_python_version": "3.13.9",
+            "ansible_net_serialnum": "FTX0945W0MY",
+            "ansible_net_system": "ios",
+            "ansible_net_version": "12.4(25d)",
+            "ansible_network_resources": {}
+        },
+        "changed": false,
+        "deprecations": [
+            {
+                "collection_name": "ansible.builtin",
+                "deprecator": {
+                    "resolved_name": "ansible.builtin",
+                    "type": null
+                },
+                "msg": "Importing 'to_bytes' from 'ansible.module_utils._text' is deprecated.",
+                "version": "2.24"
+            },
+            {
+                "collection_name": "ansible.builtin",
+                "deprecator": {
+                    "resolved_name": "ansible.builtin",
+                    "type": null
+                },
+                "msg": "Importing 'to_text' from 'ansible.module_utils._text' is deprecated.",
+                "version": "2.24"
+            },
+            {
+                "collection_name": "ansible.builtin",
+                "deprecator": {
+                    "resolved_name": "ansible.builtin",
+                    "type": null
+                },
+                "msg": "The `ansible.module_utils.common._collections_compat` module is deprecated.",
+                "version": "2.24"
+            },
+            {
+                "collection_name": "ansible.builtin",
+                "deprecator": {
+                    "resolved_name": "ansible.builtin",
+                    "type": null
+                },
+                "msg": "The paramiko connection plugin is deprecated.",
+                "version": "2.21"
+            },
+            {
+                "collection_name": "ansible.builtin",
+                "deprecator": {
+                    "resolved_name": "ansible.builtin",
+                    "type": null
+                },
+                "msg": "Passing `warnings` to `exit_json` or `fail_json` is deprecated.",
+                "version": "2.23"
+            }
+        ],
+        "failed": false
+    }
+}
+
+PLAY [R3] **********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [R3]
+
+TASK [Gather IOS facts] ********************************************************
+ok: [R3]
+
+TASK [Print device details] ****************************************************
+ok: [R3] => {
+    "msg": "Hostname: R3, int_IPv4: ['192.168.255.13', '192.168.13.3', '192.168.23.3']"
+}
+
+TASK [Print device details] ****************************************************
+ok: [R3] => {
+    "msg": "Serial Number: FTX0945W0MY\nVersion: 12.4(25d)\nModel: 3725\n"
+}
+
+PLAY RECAP *********************************************************************
+R3                         : ok=7    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

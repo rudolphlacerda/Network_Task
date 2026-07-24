@@ -1,0 +1,20 @@
+---
+- hosts: cisco_ios_routers
+  gather_facts: False
+  connection: network_cli
+
+  tasks:
+    - name: create a login banner
+      cisco.ios.ios_banner:
+        banner: login
+        text: "{{lookup('file','./banner.cfg')}}"
+#        text: |
+#          this is a multi-line banner
+#          this banner is not created from a file
+        state: present
+# state: absent is to remove a banner
+# Notice state comes under subcommand of ios ios_banner. check motd absent
+
+    - name: save the configure
+      cisco.ios.ios_config:
+        save_when: always

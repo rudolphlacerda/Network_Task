@@ -1,0 +1,30 @@
+---
+- hosts: R1
+  gather_facts: false
+  connection: network_cli
+
+# interface Loopback10
+# description interface user for testing
+# ip vrf forwarding A
+# ip address 10.10.10.10 255.255.255.255
+# ip access-group demo_acl out
+
+
+  tasks:
+    - name: replace existing loopback 10 config
+      cisco.ios.ios_config:
+       lines:
+         - description new description
+         - ip vrf forwarding A
+         - ip address 10.10.10.10 255.255.255.255
+       parents: interface loopback 10
+       replace: block
+#does not remove the demo_acl
+    - name: check the new config on loopback 10
+      cisco.ios.ios_command:
+       commands: sh run interface loopback 10
+      register: output
+
+    - name: print output
+      ansible.builtin.include_tasks:
+        file: print_output.yml

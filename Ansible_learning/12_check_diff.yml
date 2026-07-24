@@ -1,0 +1,20 @@
+---
+- hosts: R2
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+
+    - name: check difference of config against mastercopy
+      cisco.ios.ios_config:
+       diff_against: intended
+       intended_config: "{{ lookup('file','R2.cfg')}}"
+# Specify where the master conig is. In this case it is the current working dir
+
+# run palybook as: ansible-playbook 12_check_diff.yml --diff
+
+    - name: change the running config to compare against startup
+      cisco.ios.ios_config:
+        lines: ntp server 30.30.30.30
+        diff_against: startup
+        

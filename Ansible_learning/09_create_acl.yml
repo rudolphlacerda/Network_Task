@@ -1,0 +1,76 @@
+---
+  - hosts: R1
+    gather_facts: false
+    connection: network_cli
+
+    tasks:
+      - name: create a new loopback on R1 in vrf A
+        cisco.ios.ios_config:
+          lines:
+            - ip vrf forwarding A
+            - ip address 20.20.20.20 255.255.255.255
+          parents:
+            interface loopback 20
+
+      - name: wait for 10 seconds
+        ansible.builtin.pause:
+          seconds: 10
+
+  - hosts: R3
+    gather_facts: False
+    connection: network_cli
+
+    tasks:
+      - name: ping loopback from R3
+        cisco.ios.ios_command:
+         commands:
+          ping vrf A 20.20.20.20 repeat 3
+
+        register: ping_output
+
+      - name: save ping_output
+        debug:
+          var=ping_output.stdout_lines
+
+  - hosts: R1
+    gather_facts: false
+    connection: network_cli
+
+    tasks:
+
+      - name: create an acl to deny access to the new loopback in vrf A
+        cisco.ios.ios_config:
+          lines:
+            - access-list 100 deny ip any host 20.20.20.20
+            - access-list 100 permit ip any any
+          save_when: changed
+
+      - name: apply acl to fa1/0 in on R1
+        cisco.ios.ios_config:
+          lines:
+           ip access-group 100 in
+          parents:
+           interface fa1/0
+          save_when: changed
+
+      - name: wait for 10 seconds
+        ansible.builtin.pause:
+          seconds: 10
+
+
+  - hosts: R3
+    gather_facts: False
+    connection: network_cli
+
+    tasks:
+      - name: ping test to both loopback on R1
+        cisco.ios.ios_command:
+          commands:
+            - ping vrf A 20.20.20.20 repeat 5
+            - ping vrf A 7.7.7.7 repeat 5
+
+        register: ping_output
+
+      - name: send ping output to screen
+        debug:
+          var=ping_output.stdout_lines

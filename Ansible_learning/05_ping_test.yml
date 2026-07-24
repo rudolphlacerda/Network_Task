@@ -1,0 +1,19 @@
+---
+# This playbook is for a PING test to all device_backups
+# Play 1
+- hosts: cisco_ios_routers
+  gather_facts: false
+  connection: network_cli
+
+
+  tasks:
+    - name: ping test for the network
+      cisco.ios.ios_command:
+        commands:
+          - ping 192.168.255.254 repeat 5
+
+      register: ping_output
+
+    - name: print output to screen
+      debug:
+        var=ping_output.stdout_lines

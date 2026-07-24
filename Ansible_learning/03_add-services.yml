@@ -1,0 +1,33 @@
+---
+- hosts: cisco_ios_routers
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: take device_backup
+      cisco.ios.ios_config:
+       backup: true
+
+    - name: setup system services
+      cisco.ios.ios_config:
+       lines:
+        - service password-encryption
+        - username test2 password test
+       save_when: changed
+
+# save_when: changed applies when the current play modifies the configure
+# to save config changes from a previous play use save_when: modified as below
+
+#    - name: save configuration to startup
+#      cisco.ios.ios_config:
+#       save_when: modified
+
+    - name: verify device configuration
+      cisco.ios.ios_command:
+       commands: sh run | include username
+
+      register: print_output
+
+    - name: print output to screen
+      debug:
+       var: print_output.stdout_lines
